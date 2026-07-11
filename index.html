@@ -33,7 +33,6 @@
             min-height: 100vh;
         }
         
-        /* TOP NAVIGATION BAR */
         .top-bar {
             background: var(--ink);
             color: var(--cream);
@@ -46,7 +45,6 @@
             border-bottom: 3px double var(--gold);
         }
         
-        /* MASTHEAD */
         .masthead {
             text-align: center;
             padding: 60px 20px 40px;
@@ -94,7 +92,6 @@
             display: inline-block;
         }
         
-        /* MAIN LAYOUT */
         .main-wrapper {
             max-width: 1100px;
             margin: 0 auto;
@@ -104,7 +101,6 @@
             gap: 50px;
         }
         
-        /* POSTS */
         .posts-section {
             min-width: 0;
         }
@@ -192,31 +188,28 @@
             font-weight: 600;
         }
         
-        .post-excerpt {
-            font-size: 14px;
-            line-height: 1.8;
+        .post-body {
+            font-size: 15px;
+            line-height: 1.9;
             color: #3a3a3a;
         }
         
-        .read-more {
-            display: inline-block;
-            margin-top: 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--rust);
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 2px solid transparent;
-            transition: border-color 0.3s;
+        .post-body h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 20px 0 10px; color: var(--ink); }
+        .post-body h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 15px 0 8px; color: var(--ink); }
+        .post-body p { margin-bottom: 15px; }
+        .post-body ul, .post-body ol { margin: 10px 0 15px 20px; }
+        .post-body li { margin-bottom: 5px; }
+        .post-body blockquote {
+            border-left: 3px solid var(--gold);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--brown);
         }
+        .post-body hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+        .post-body img { max-width: 100%; border-radius: 4px; margin: 15px 0; }
+        .post-body strong { color: var(--ink); }
         
-        .read-more:hover {
-            border-bottom: 2px solid var(--rust);
-        }
-        
-        /* SIDEBAR */
         .sidebar {
             min-width: 0;
         }
@@ -266,7 +259,6 @@
             line-height: 1.6;
         }
         
-        /* FOOTER */
         .footer {
             text-align: center;
             padding: 30px;
@@ -279,7 +271,6 @@
             color: var(--muted);
         }
         
-        /* LOADING */
         .loading {
             text-align: center;
             color: var(--muted);
@@ -288,34 +279,19 @@
             font-family: 'Playfair Display', serif;
         }
         
-        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .main-wrapper {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            .masthead {
-                margin: 0 20px;
-                padding: 40px 20px 30px;
-            }
-            .masthead h1 {
-                font-size: 36px;
-            }
-            .featured-post {
-                padding: 25px;
-            }
-            .featured-post h2 {
-                font-size: 1.5rem;
-            }
+            .main-wrapper { grid-template-columns: 1fr; gap: 30px; }
+            .masthead { margin: 0 20px; padding: 40px 20px 30px; }
+            .masthead h1 { font-size: 36px; }
+            .featured-post { padding: 25px; }
+            .featured-post h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOP BAR -->
     <div class="top-bar">Community Letters · Stories · Wisdom · Connection</div>
 
-    <!-- MASTHEAD -->
     <header class="masthead">
         <div class="volume">Vol. I — The Dating Chronicles</div>
         <h1>Community<br>Letters</h1>
@@ -323,15 +299,12 @@
         <div class="dateline" id="current-date"></div>
     </header>
 
-    <!-- MAIN CONTENT -->
     <div class="main-wrapper">
         
-        <!-- POSTS -->
         <main class="posts-section" id="posts">
             <div class="loading">Pulling letters from the heart...</div>
         </main>
 
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-ad">🌿 The Art of Love — Free, Always</div>
             
@@ -353,7 +326,6 @@
         </aside>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
         This Time Love · Est. 2026 · All Rights Reserved
     </footer>
@@ -375,15 +347,13 @@
 
         const container = document.getElementById('posts');
 
-        // Set current date in masthead
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
 
-        // --- LOAD POSTS FROM HASHNODE RSS ---
         async function loadBlog() {
             try {
-                const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://auntiethoughts.hashnode.dev/rss.xml'));
+                const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://auntiethoughts.hashnode.dev/rss.xml'));
                 
                 if (!response.ok) throw new Error('Network error');
                 
@@ -404,33 +374,32 @@
                     const date = pubDate ? new Date(pubDate).toLocaleDateString('en-US', {
                         year: 'numeric', month: 'long', day: 'numeric'
                     }) : 'Just now';
-                    const description = item.querySelector('description')?.textContent || '';
-                    const cleanDesc = description.replace(/<[^>]*>/g, '').substring(0, 350);
                     const creator = item.querySelector('dc\\:creator')?.textContent || 'Anonymous';
+                    const contentEncoded = item.querySelector('content\\:encoded')?.textContent || '';
+                    const description = item.querySelector('description')?.textContent || '';
+                    const bodyContent = contentEncoded || `<p>${description}</p>`;
                     const isFirst = index === 0;
 
                     if (isFirst) {
                         return `
                         <div class="featured-post">
-                            <h2><a href="${link}" target="_blank" rel="noopener">${title}</a></h2>
+                            <h2>${title}</h2>
                             <p class="post-meta">
                                 <span>📅 ${date}</span> · 
                                 <span class="author">✍️ ${creator}</span>
                             </p>
-                            <p class="post-excerpt">${cleanDesc}...</p>
-                            <a href="${link}" target="_blank" rel="noopener" class="read-more">Continue Reading →</a>
+                            <div class="post-body">${bodyContent}</div>
                         </div>`;
                     }
 
                     return `
                     <div class="post">
-                        <h2><a href="${link}" target="_blank" rel="noopener">${title}</a></h2>
+                        <h2>${title}</h2>
                         <p class="post-meta">
                             <span>📅 ${date}</span> · 
                             <span class="author">✍️ ${creator}</span>
                         </p>
-                        <p class="post-excerpt">${cleanDesc}...</p>
-                        <a href="${link}" target="_blank" rel="noopener" class="read-more">Continue Reading →</a>
+                        <div class="post-body">${bodyContent}</div>
                     </div>`;
                 }).join('');
 
@@ -440,7 +409,6 @@
             }
         }
 
-        // --- LOAD SIDEBAR FROM FIREBASE ---
         async function loadSidebar() {
             try {
                 const snap = await getDoc(doc(db, 'site_content', 'blog_sidebar'));
@@ -453,7 +421,7 @@
                     `;
                 }
             } catch (error) {
-                // Keep default sidebar content
+                // Keep default sidebar
             }
         }
 
